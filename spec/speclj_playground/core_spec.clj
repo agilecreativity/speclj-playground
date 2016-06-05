@@ -54,5 +54,17 @@
       (= (reduce red-fn v c) (my-reduce red-fn v c)))))
 
 ;; Let's do another TDD again
+(describe "my-count"
+  (it "return 0 for an empty list"
+      (should= 0 (my-count '())))
+
+  (it "returns 0 for nil"
+      (should= 0 (my-count nil)))
+
+  (it "returns 1 for a list of one item"
+      (should= 1 (my-count '(1))))
+
+  (it "returns correct result for more than on element in the list"
+      (should= 3 (my-count '(1 2 3)))))
 
 (run-specs)
