@@ -1,5 +1,9 @@
 (ns speclj-playground.core-spec
-  (:require [speclj.core :refer :all]
+  (:require [clojure.test.check :as tc]
+            [clojure.test.check.clojure-test :refer :all]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.properties :as prop]
+            [speclj.core :refer :all]
             [speclj-playground.core :refer :all]))
 
 (describe "simple test"
@@ -29,5 +33,26 @@
 
    (it "returns 0 for multiplication on empty list"
        (should= 1 (my-reduce * []))))
+
+;; Property-based tests
+(def colls
+  (gen/one-of [(gen/vector gen/any)
+               (gen/list gen/any)
+               (gen/set gen/any)
+               (gen/map gen/any gen/any)
+               gen/bytes
+               gen/string]))
+
+(defn red-fn
+  ([] true)
+  ([a b] b))
+
+(defspec my-reducer-property-test 1000
+  (prop/for-all [c colls v gen/any]
+    (and
+      (= (reduce red-fn c) (my-reduce red-fn c))
+      (= (reduce red-fn v c) (my-reduce red-fn v c)))))
+
+;; Let's do another TDD again
 
 (run-specs)
