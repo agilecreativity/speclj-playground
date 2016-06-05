@@ -67,4 +67,11 @@
   (it "returns correct result for more than on element in the list"
       (should= 3 (my-count '(1 2 3)))))
 
+;; Confirm using property-based test
+(defspec my-count-property-test 1000
+  (prop/for-all [c colls]
+                (= (count c) (my-count c))))
+
+;; Filter (TBC)
+
 (run-specs)
