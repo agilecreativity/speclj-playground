@@ -1,3 +1,4 @@
+
 (ns speclj-playground.core-spec
   (:require [clojure.test.check :as tc]
             [clojure.test.check.clojure-test :refer :all]
@@ -73,5 +74,11 @@
                 (= (count c) (my-count c))))
 
 ;; Filter (TBC)
+(describe "filter"
+   (it "returns empty lazy sequence when filtering for zero on empty vector"
+       (should= clojure.lang.LazySeq (class (my-filter zero? []))))
+
+   (it "returns sequence of even numbers when filtering for even numbers"
+       (should= '(0 2 4 6 8) (my-filter even? (range 10)))))
 
 (run-specs)
