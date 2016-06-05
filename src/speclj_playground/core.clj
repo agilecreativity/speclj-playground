@@ -57,4 +57,22 @@
 ;; to get the vector containing just the even numbers given an input of [0 1 2 3 4 5]?
 (into [] (my-filter even? [0 1 2 3 4 5])) ;; [0 2 4]
 
-;; Map (TBC)
+;; First simple map
+(defn my-map
+  [f coll]
+  (lazy-seq (when (seq coll)
+              (cons (f (first coll)) (my-map f (rest coll))))))
+
+;; Extend this for two collections
+(defn my-map
+  ([f coll]
+   (lazy-seq (when (seq coll)
+               (cons (f (first coll)) (my-map f (rest coll))))))
+  ([f c1 c2]
+   (lazy-seq (when (and (seq c1) (seq c2))
+               (cons (f (first c1) (first c2)) (my-map f (rest c1) (rest c2))))))
+  ([f c1 c2 & more]
+   (loop [c1 c1 c2 c2 r more]
+     (if (empty? r)
+       (my-map f c1 c2)
+       (recur (my-map f c1 c2) (first r) (rest r))))))

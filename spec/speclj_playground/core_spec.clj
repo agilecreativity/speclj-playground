@@ -73,12 +73,17 @@
   (prop/for-all [c colls]
                 (= (count c) (my-count c))))
 
-;; Filter (TBC)
-(describe "filter"
-   (it "returns empty lazy sequence when filtering for zero on empty vector"
-       (should= clojure.lang.LazySeq (class (my-filter zero? []))))
+;; Filter
+(describe "my-filter"
+  (it "returns empty lazy sequence when filtering for zero on empty vector"
+    (should= clojure.lang.LazySeq (class (my-filter zero? []))))
 
-   (it "returns sequence of even numbers when filtering for even numbers"
-       (should= '(0 2 4 6 8) (my-filter even? (range 10)))))
+  (it "returns sequence of even numbers when filtering for even numbers"
+    (should= '(0 2 4 6 8) (my-filter even? (range 10)))))
+
+(describe "my-map"
+  (it "maps with non-commulative functions"
+    (should=  (flatten '([:a :d :g] [:b :e :h] [:c :f :i]))
+              (flatten (apply my-map vector [[:a :b :c] [:d :e :f] [:g :h :i]])))))
 
 (run-specs)
