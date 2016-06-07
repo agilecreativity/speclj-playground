@@ -76,3 +76,34 @@
      (if (empty? r)
        (my-map f c1 c2)
        (recur (my-map f c1 c2) (first r) (rest r))))))
+
+;; Map functions
+(declare my-map)
+
+(defn reorder [c]
+  (when (every? seq c)
+    (cons (my-map first c) (reorder (my-map rest c)))))
+
+(defn my-map
+  ([f coll]
+   (lazy-seq (when (seq coll)
+               (cons (f (first coll)) (my-map f (rest coll))))))
+  ([f c1 & colls]
+   (my-map #(apply f %) (reorder (cons c1 colls)))))
+
+(defn long-running-job
+  ([& args]
+   (Thread/sleep 1000)
+   (apply + 10 args)))
+
+(defn realize-lazy-seq
+  ([map-type f & args]
+   (loop [result (apply map-type f args)]
+     (when result
+       (recur (next result))))))
+
+(defn test-time
+  ([map-type f & coll]
+   (let [st (System/nanoTime)]
+     (apply realize-lazy-seq map-type f coll)
+     (/ (- (System/nanoTime) st) 1e9))))

@@ -1,4 +1,3 @@
-
 (ns speclj-playground.core-spec
   (:require [clojure.test.check :as tc]
             [clojure.test.check.clojure-test :refer :all]
@@ -85,5 +84,14 @@
   (it "maps with non-commulative functions"
     (should=  (flatten '([:a :d :g] [:b :e :h] [:c :f :i]))
               (flatten (apply my-map vector [[:a :b :c] [:d :e :f] [:g :h :i]])))))
+
+(describe "long-running-job"
+   (it "runs with the single element"
+       (should (< 1.0 (let [st (System/nanoTime)]
+                         (long-running-job 1)
+                         (/ (- (System/nanoTime) st) 1e9)))))
+
+   (it "run with map and collection"
+       (should (< 4.0 (test-time map long-running-job [1 2 3 4])))))
 
 (run-specs)
